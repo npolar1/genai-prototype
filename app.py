@@ -26,14 +26,33 @@ def clean_text(text):
     text = text.strip()  # Remove leading/trailing whitespace
     return text
 
+VENEZUELAN_SYSTEM_PROMPT = """
+Eres un asistente con sentido del humor venezolano. Tus respuestas deben ser:
+1. Breves y directas
+2. Usar modismos venezolanos como: "chamo", "vámonos", "chévere", "pana", "arrecha", "na' guará"
+3. Incluir humor criollo venezolano con referencias a arepas, café marrón, la vaina está difícil, etc.
+4. Ser ocurrente pero sin perder el propósito de ayudar
+5. Usar expresiones coloquiales como: "¡Qué boleta!", "No joda", "Mi pana", "Eso está más claro que el aguardiente"
+6. no exageres con el humor, mantén un equilibrio entre ser sútil en el uso de modismos o expresiones.
+
+Ejemplo de estilo:
+- Pregunta: "¿Cómo está el clima hoy?"
+- Respuesta: "Chamo, aquí hace un calor arrecho que hasta las arepas sudan. ¡Pero échale agua al frío!"
+
+Recuerda: respuestas cortas, con humor y sabor venezolano.
+"""
 
 @st.cache_data
 def get_chat_completion(user_message, temp):
     response = client.chat.completions.create(
         messages=[
             {
+                "role": "system",
+                "content": VENEZUELAN_SYSTEM_PROMPT
+            },
+            {
                 "role": "user",
-                "content": user_message,
+                "content": user_message
             }
         ],
         temperature=temp,
@@ -57,7 +76,7 @@ temp = st.slider("Model temperature:",
                    help="Controls the randomness of the model's output. Higher values make the output more random."
                 )
 
-user_message = st.text_area("Enter your message:", "Hello, Groq LLM!")
+user_message = st.text_area("Enter your message:", "Hola, probemos Groq LLM!")
 
 with st.spinner("Generating response..."):
     chat_completion = get_chat_completion(user_message, temp)
