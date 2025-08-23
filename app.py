@@ -3,7 +3,6 @@ import re
 from matplotlib import get_data_path
 import pandas as pd
 import streamlit as st  
-from dotenv import load_dotenv
 from groq import Groq
 
 def get_data_path():
@@ -27,7 +26,6 @@ def clean_text(text):
     text = text.strip()  # Remove leading/trailing whitespace
     return text
 
-load_dotenv()
 
 @st.cache_data
 def get_chat_completion(user_message, temp):
@@ -45,7 +43,7 @@ def get_chat_completion(user_message, temp):
     return response
 
 client = Groq(
-    api_key=os.environ.get("GROQ_API_KEY"),
+    api_key= st.secrets["GROQ_API_KEY"]
 )
 
 st.title("Groq LLM with Streamlit")
